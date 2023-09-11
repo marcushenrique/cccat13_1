@@ -4,15 +4,23 @@ export type RequestRideInput = {
     to: { lat: number, long: number }
 }
 
+export type AcceptRideInput = {
+    rideId: string,
+    driverId: string
+};
+
 export type Account = {
     account_id: string,
-    is_passenger: boolean
+    is_passenger: boolean,
+    is_driver: boolean
 }
+
+export type AccountType = "passenger" | "driver"
 
 export type Ride = {
     ride_id: string,
     passenger_id: string,
-    driver_id: string,
+    driver_id?: string,
     status: string,
     fare: number,
     distance: number,
@@ -22,3 +30,5 @@ export type Ride = {
     to_long: number,
     date: Date
 }
+
+export type DateProvider = () => Date

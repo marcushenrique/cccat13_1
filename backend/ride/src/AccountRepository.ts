@@ -12,7 +12,7 @@ export default class AccountRepository {
             connection.$pool.end();
         }
     }
-    
+
     async addAccount(account: Account) {
         const pgp = pgPromise();
         const tableName = new pgp.helpers.TableName({ table: "account", schema: "cccat13" });
