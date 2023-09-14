@@ -1,0 +1,21 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://postgres:root@localhost:5432/postgres?schema=cccat13"
+}
+
+model Position {
+  positionId String   @id @map("position_id")
+  rideId     String   @map("ride_id")
+  lat        Decimal
+  long       Decimal
+  date       DateTime
+
+  @@map("position")
+}
