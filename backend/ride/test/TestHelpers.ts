@@ -8,10 +8,10 @@ export function createTestAccount(account: { accountId: string, isDriver?: boole
     };
 }
 
-export function createTestRide(ride: { rideId: string, driverId?: string, status: string }) {
+export function createTestRide(ride: { rideId: string, passengerId?: string, driverId?: string, status: string }) {
     return {
         rideId: ride.rideId,
-        passengerId: crypto.randomUUID(),
+        passengerId: ride.passengerId || crypto.randomUUID(),
         driverId: ride.driverId || crypto.randomUUID(),
         status: ride.status,
         fare: 1,
