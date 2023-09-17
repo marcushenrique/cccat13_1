@@ -3,12 +3,8 @@ import RideRepository from "./RideRepository";
 import { AcceptRideInput } from "./types";
 
 export default class AcceptRideService {
-    accountRepository: AccountRepository
-    rideRepository: RideRepository
 
-    constructor(accountRepository: AccountRepository, rideRepository: RideRepository) {
-        this.accountRepository = accountRepository;
-        this.rideRepository = rideRepository;
+    constructor(readonly accountRepository: AccountRepository, readonly rideRepository: RideRepository) {
     }
 
     async acceptRide(input: AcceptRideInput) {
@@ -17,9 +13,6 @@ export default class AcceptRideService {
             throw new Error("Invalid driver");
         }
         const ride = await this.rideRepository.getRide(input.rideId);
-        if (!ride) {
-            throw new Error("Ride does not exist");
-        }
         if (ride.status !== "requested") {
             throw new Error("Ride is not in requested status");
         }
@@ -27,7 +20,7 @@ export default class AcceptRideService {
         if (lastRide && this.isActive(lastRide.status)) {
             throw new Error("Driver has another active ride");
         }
-        ride.driver_id = input.driverId;
+        ride.driverId = input.driverId;
         ride.status = "accepted";
         await this.rideRepository.updateRide(ride);
     }

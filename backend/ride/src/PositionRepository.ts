@@ -1,4 +1,4 @@
-import { Position, Prisma, PrismaClient } from "@prisma/client";
+import { Position, PrismaClient } from "@prisma/client";
 
 export default class PositionRepository {
     prismaClient: PrismaClient
@@ -7,21 +7,15 @@ export default class PositionRepository {
         this.prismaClient = new PrismaClient();
     }
 
-    async getPosition(positionId: string) {
-        return await this.prismaClient.position.findFirstOrThrow({
-            where: { positionId }
-        })
+    async getByRideId(rideId: string) {
+        return await this.prismaClient.position.findMany({ where: { rideId } });
+    }
+
+    async getById(positionId: string) {
+        return await this.prismaClient.position.findFirstOrThrow({ where: { positionId } });
     }
 
     async addPosition(position: Position) {
-        await this.prismaClient.position.create({
-            data: {
-                positionId: position.positionId,
-                rideId: position.rideId,
-                lat: new Prisma.Decimal(position.lat),
-                long: new Prisma.Decimal(position.long),
-                date: position.date
-            }
-        });
+        await this.prismaClient.position.create({ data: { ...position } });
     }
 }

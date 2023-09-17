@@ -10,11 +10,27 @@ datasource db {
   url      = "postgres://postgres:root@localhost:5432/postgres?schema=cccat13"
 }
 
+model Ride {
+  rideId      String   @id @map("ride_id")
+  passengerId String   @map("passenger_id")
+  driverId    String   @map("driver_id")
+  status      String
+  fare        Float
+  distance    Float
+  fromLat     Float    @map("from_lat")
+  fromLong    Float    @map("from_long")
+  toLat       Float    @map("to_lat")
+  toLong      Float    @map("to_long")
+  date        DateTime
+
+  @@map("ride")
+}
+
 model Position {
   positionId String   @id @map("position_id")
   rideId     String   @map("ride_id")
-  lat        Decimal
-  long       Decimal
+  lat        Float
+  long       Float
   date       DateTime
 
   @@map("position")

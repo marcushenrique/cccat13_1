@@ -10,33 +10,33 @@ describe("AcceptRideService", () => {
         // Arrange
         const input = { rideId: crypto.randomUUID(), driverId: crypto.randomUUID() };
         const accountRepository = new AccountRepository();
-        await accountRepository.addAccount(createTestAccount({ id: input.driverId, isDriver: true }));
+        await accountRepository.addAccount(createTestAccount({ accountId: input.driverId, isDriver: true }));
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ id: input.rideId, status: "requested" }));
+        await rideRepository.addRide(createTestRide({ rideId: input.rideId, driverId: input.driverId, status: "requested" }));
         // Act
         const acceptRideService = new AcceptRideService(accountRepository, rideRepository);
         await acceptRideService.acceptRide(input);
         // Assert
         const ride = await rideRepository.getRide(input.rideId);
         expect(ride).toBeDefined();
-        expect(ride.driver_id).toBe(input.driverId);
+        expect(ride.driverId).toBe(input.driverId);
         expect(ride.status).toBe("accepted");
     });
 
     test("should validate if ride exists", async () => {
         const input = { rideId: crypto.randomUUID(), driverId: crypto.randomUUID() };
         const accountRepository = new AccountRepository();
-        await accountRepository.addAccount(createTestAccount({ id: input.driverId, isDriver: true }));
+        await accountRepository.addAccount(createTestAccount({ accountId: input.driverId, isDriver: true }));
         // Act
         const acceptRideService = new AcceptRideService(accountRepository, new RideRepository());
-        await expect(() => acceptRideService.acceptRide(input)).rejects.toThrow(new Error("Ride does not exist"));
+        await expect(() => acceptRideService.acceptRide(input)).rejects.toThrow(new Error("No Ride found"));
     });
 
     test("should validate if accepting account is a driver", async () => {
         // Arrange
         const input = { rideId: crypto.randomUUID(), driverId: crypto.randomUUID() };
         const accountRepository = new AccountRepository();
-        await accountRepository.addAccount(createTestAccount({ id: input.driverId, isDriver: false }));
+        await accountRepository.addAccount(createTestAccount({ accountId: input.driverId, isDriver: false }));
         // Act
         const acceptRideService = new AcceptRideService(accountRepository, new RideRepository());
         await expect(() => acceptRideService.acceptRide(input)).rejects.toThrow(new Error("Invalid driver"));
@@ -46,9 +46,9 @@ describe("AcceptRideService", () => {
         // Arrange
         const input = { rideId: crypto.randomUUID(), driverId: crypto.randomUUID() };
         const accountRepository = new AccountRepository();
-        await accountRepository.addAccount(createTestAccount({ id: input.driverId, isDriver: true }));
+        await accountRepository.addAccount(createTestAccount({ accountId: input.driverId, isDriver: true }));
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ id: input.rideId, status: "completed" }));
+        await rideRepository.addRide(createTestRide({ rideId: input.rideId, status: "completed" }));
         // Act
         const acceptRideService = new AcceptRideService(accountRepository, rideRepository);
         await expect(() => acceptRideService.acceptRide(input)).rejects.toThrow(new Error("Ride is not in requested status"));
@@ -58,10 +58,10 @@ describe("AcceptRideService", () => {
         // Arrange
         const input = { rideId: crypto.randomUUID(), driverId: crypto.randomUUID() };
         const accountRepository = new AccountRepository();
-        await accountRepository.addAccount(createTestAccount({ id: input.driverId, isDriver: true }));
+        await accountRepository.addAccount(createTestAccount({ accountId: input.driverId, isDriver: true }));
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ id: input.rideId, status: "requested" }));
-        await rideRepository.addRide(createTestRide({ id: crypto.randomUUID(), status, driverId: input.driverId }));
+        await rideRepository.addRide(createTestRide({ rideId: input.rideId, status: "requested" }));
+        await rideRepository.addRide(createTestRide({ rideId: crypto.randomUUID(), status, driverId: input.driverId }));
         // Act
         const acceptRideService = new AcceptRideService(accountRepository, rideRepository);
         await expect(() => acceptRideService.acceptRide(input)).rejects.toThrow(new Error("Driver has another active ride"));
