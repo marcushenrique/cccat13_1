@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import sinon from "sinon";
 import PositionRepository from "../src/PositionRepository";
 import RideRepository from "../src/RideRepository";
 import UpdatePositionService from "../src/UpdatePositionService";
@@ -12,11 +13,12 @@ describe("UpdatePositionService", () => {
         const rideRepository = new RideRepository();
         await rideRepository.add(createTestRide({ rideId: input.rideId, status: "in_progress" }))
         const positionRepository = new PositionRepository();
+        const spy = sinon.spy(PositionRepository.prototype, "add");
         // Act
         const service = new UpdatePositionService(rideRepository, positionRepository);
-        const positionId = await service.updatePosition(input);
+        await service.updatePosition(input);
         // Assert
-        const position = await positionRepository.getById(positionId);
+        const position = spy.getCall(0).args[0];
         expect(position.positionId).toBeDefined();
         expect(position.rideId).toBe(input.rideId);
         expect(position.lat).toBe(input.lat);

@@ -20,6 +20,5 @@ export default class UpdatePositionService {
             date: new Date()
         };
         await this.positionRepository.add(position);
-        return position.positionId;
     }
 }
