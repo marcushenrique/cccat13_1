@@ -8,11 +8,11 @@ const FARE_FACTOR = 2.1;
 
 export default class FinishRideService {
 
-    constructor(readonly rideRepository: RideRepository, readonly positionRepository: PositionRepository) {
+    constructor(private readonly rideRepository: RideRepository, private readonly positionRepository: PositionRepository) {
     }
 
     async finishRide(rideId: string) {
-        const ride = await this.rideRepository.getRide(rideId);
+        const ride = await this.rideRepository.getById(rideId);
         if (ride.status !== "in_progress") {
             throw new Error("Ride is not in progress");
         }
@@ -20,7 +20,7 @@ export default class FinishRideService {
         ride.distance = this.calculateTotalDistance(positions);
         ride.fare = this.calculateFare(ride.distance);
         ride.status = "completed";
-        await this.rideRepository.updateRide(ride);
+        await this.rideRepository.update(ride);
     }
 
     private calculateTotalDistance(positions: Position[]) {

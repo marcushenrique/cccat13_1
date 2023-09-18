@@ -10,16 +10,16 @@ describe("FinishRideService", () => {
         // Arrange
         const rideId = crypto.randomUUID();
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ rideId, status: "in_progress" }));
+        await rideRepository.add(createTestRide({ rideId, status: "in_progress" }));
         const positionRepository = new PositionRepository();
         for (const { lat, long } of getTestCoordinates()) {
-            await positionRepository.addPosition(createTestPosition({ rideId, lat, long }));
+            await positionRepository.add(createTestPosition({ rideId, lat, long }));
         }
         // Act
         const service = new FinishRideService(rideRepository, positionRepository);
         await service.finishRide(rideId);
         // Assert
-        const ride = await rideRepository.getRide(rideId);
+        const ride = await rideRepository.getById(rideId);
         expect(ride.status).toBe("completed");
         expect(ride.distance).toBe(6.8);
         expect(ride.fare).toBe(14.28);
@@ -29,7 +29,7 @@ describe("FinishRideService", () => {
         // Arrange
         const rideId = crypto.randomUUID();
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ rideId, status: "completed" }));
+        await rideRepository.add(createTestRide({ rideId, status: "completed" }));
         // Act
         const service = new FinishRideService(rideRepository, new PositionRepository());
         await expect(() => service.finishRide(rideId)).rejects.toThrow(new Error("Ride is not in progress"));

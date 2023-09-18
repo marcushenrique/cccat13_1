@@ -9,12 +9,12 @@ describe("StartRideService", () => {
         // Arrange
         const rideId = crypto.randomUUID();
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ rideId: rideId, status: "accepted" }));
+        await rideRepository.add(createTestRide({ rideId: rideId, status: "accepted" }));
         // Act
         const service = new StartRideService(rideRepository);
         await service.startRide(rideId);
         // Assert
-        const ride = await rideRepository.getRide(rideId);
+        const ride = await rideRepository.getById(rideId);
         expect(ride.status).toBe("in_progress");
     });
 
@@ -22,7 +22,7 @@ describe("StartRideService", () => {
         // Arrange
         const rideId = crypto.randomUUID();
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ rideId: rideId, status: "requested" }));
+        await rideRepository.add(createTestRide({ rideId: rideId, status: "requested" }));
         // Act
         const service = new StartRideService(rideRepository);
         await expect(() => service.startRide(rideId)).rejects.toThrow(new Error("Ride is not accepted"));

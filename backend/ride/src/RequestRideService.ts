@@ -5,7 +5,7 @@ import { RequestRideInput } from "./types";
 
 export default class RequestRideService {
 
-    constructor(readonly accountRepository: AccountRepository, readonly rideRepository: RideRepository) {
+    constructor(private readonly accountRepository: AccountRepository, private readonly rideRepository: RideRepository) {
     }
 
     async requestRide(input: RequestRideInput) {
@@ -13,7 +13,7 @@ export default class RequestRideService {
         if (!account.is_passenger) {
             throw new Error("Invalid passenger account");
         }
-        const lastRide = await this.rideRepository.getLastRide(input.passengerId, "passenger");
+        const lastRide = await this.rideRepository.getLastByAccountIdAndType(input.passengerId, "passenger");
         if (lastRide && lastRide.status !== "completed") {
             throw new Error("Passenger has an incompleted ride");
         }
@@ -30,7 +30,7 @@ export default class RequestRideService {
             toLong: input.to.long,
             date: new Date()
         };
-        await this.rideRepository.addRide(ride);
+        await this.rideRepository.add(ride);
         return ride.rideId;
     }
 }

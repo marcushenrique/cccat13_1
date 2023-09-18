@@ -2,15 +2,15 @@ import RideRepository from "./RideRepository";
 
 export default class StartRideService {
 
-    constructor(readonly rideRepository: RideRepository) {
+    constructor(private readonly rideRepository: RideRepository) {
     }
 
     async startRide(rideId: string) {
-        const ride = await this.rideRepository.getRide(rideId);
+        const ride = await this.rideRepository.getById(rideId);
         if (ride.status !== "accepted") {
             throw new Error("Ride is not accepted");
         }
         ride.status = "in_progress";
-        await this.rideRepository.updateRide(ride);
+        await this.rideRepository.update(ride);
     }
 }

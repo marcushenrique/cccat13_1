@@ -20,7 +20,7 @@ describe("RequestRideService", () => {
         const service = new RequestRideService(accountRepository, rideRepository);
         const rideId = await service.requestRide(input);
         // Assert
-        const ride = await rideRepository.getRide(rideId);
+        const ride = await rideRepository.getById(rideId);
         expect(rideId).toBeDefined();
         expect(ride.status).toBe("requested");
         expect(ride.fromLat).toBe(input.from.lat);

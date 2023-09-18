@@ -10,7 +10,7 @@ describe("UpdatePositionService", () => {
         // Arrange
         const input = { rideId: crypto.randomUUID(), lat: -23.5228307, long: -46.6972663 };
         const rideRepository = new RideRepository();
-        await rideRepository.addRide(createTestRide({ rideId: input.rideId, status: "in_progress" }))
+        await rideRepository.add(createTestRide({ rideId: input.rideId, status: "in_progress" }))
         const positionRepository = new PositionRepository();
         // Act
         const service = new UpdatePositionService(rideRepository, positionRepository);
@@ -28,7 +28,7 @@ describe("UpdatePositionService", () => {
         // Arrange
         const input = { rideId: crypto.randomUUID(), lat: -23.5228307, long: -46.6972663 };
         const rideRepository = new RideRepository()
-        await rideRepository.addRide(createTestRide({ rideId: input.rideId, status: "accepted" }))
+        await rideRepository.add(createTestRide({ rideId: input.rideId, status: "accepted" }))
         // Act
         const service = new UpdatePositionService(rideRepository, new PositionRepository());
         await expect(() => service.updatePosition(input)).rejects.toThrow(new Error("Ride is not in progress"));

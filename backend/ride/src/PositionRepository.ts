@@ -1,7 +1,7 @@
 import { Position, PrismaClient } from "@prisma/client";
 
 export default class PositionRepository {
-    prismaClient: PrismaClient
+    private prismaClient: PrismaClient
 
     constructor() {
         this.prismaClient = new PrismaClient();
@@ -15,7 +15,7 @@ export default class PositionRepository {
         return await this.prismaClient.position.findFirstOrThrow({ where: { positionId } });
     }
 
-    async addPosition(position: Position) {
+    async add(position: Position) {
         await this.prismaClient.position.create({ data: { ...position } });
     }
 }

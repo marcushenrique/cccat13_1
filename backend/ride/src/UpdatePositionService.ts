@@ -4,11 +4,11 @@ import RideRepository from "./RideRepository";
 
 export default class UpdatePositionService {
 
-    constructor(readonly rideRepository: RideRepository, readonly positionRepository: PositionRepository) {
+    constructor(private readonly rideRepository: RideRepository, private readonly positionRepository: PositionRepository) {
     }
 
     async updatePosition(input: any) {
-        const ride = await this.rideRepository.getRide(input.rideId);
+        const ride = await this.rideRepository.getById(input.rideId);
         if (ride.status !== "in_progress") {
             throw new Error("Ride is not in progress");
         }
@@ -19,7 +19,7 @@ export default class UpdatePositionService {
             long: input.long,
             date: new Date()
         };
-        await this.positionRepository.addPosition(position);
+        await this.positionRepository.add(position);
         return position.positionId;
     }
 }
